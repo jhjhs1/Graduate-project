@@ -3,7 +3,6 @@ import numpy as np
 import winsound as ws
 import cv2
 import dlib
-import serial
 from scipy.spatial import distance as dist
 
 
@@ -94,12 +93,7 @@ while True:
 
             ear = (ear_right + ear_left)/2
 
-            if ear <= EYE_AR_THRESH:
-                COUNTER += 1
-                if COUNTER >= COUNTER_FRAME:
-                    beepsound()
-            else:
-                COUNTER = 0
+
 #########################################################################################################
 
             if ear_left < EYE_AR_THRESH:
@@ -119,6 +113,12 @@ while True:
                 COUNTER_RIGHT = 0
 #########################################################################################################
 
+            if ear <= EYE_AR_THRESH:
+                COUNTER += 1
+                if COUNTER >= COUNTER_FRAME:
+                    beepsound()
+            else:                                ##눈 뜨면 소리 안남
+                COUNTER = 0
 
         cv2.putText(frame, "Wink Left : {}".format(TOTAL_LEFT), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255),
                     2)              #wink left의 텍스트 생성
@@ -127,9 +127,8 @@ while True:
 
         cv2.imshow("Faces found", frame)
 
-        ch = 0xFF & cv2.waitKey(1)
+    ch = 0xFF & cv2.waitKey(1)
+    if ch == ord('q'):
+         break
 
-        if ch == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
+cv2.destroyAllWindows()
